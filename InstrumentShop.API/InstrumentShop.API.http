@@ -1,0 +1,6 @@
+@InstrumentShop.API_HostAddress = http://localhost:5034
+
+GET {{InstrumentShop.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
