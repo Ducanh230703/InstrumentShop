@@ -1,7 +1,11 @@
-﻿using InstrumentShop.API.Services;
-using InstrumentShop.Shared.Models;
+﻿using InstrumentShop.Shared.Models.DTOs;
+using InstrumentShop.API.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace InstrumentShop.API.Controllers
 {
@@ -10,52 +14,110 @@ namespace InstrumentShop.API.Controllers
     public class InstrumentsController : ControllerBase
     {
         private readonly InstrumentService _instrumentService;
+        private readonly ILogger<InstrumentsController> _logger;
 
-        public InstrumentsController(InstrumentService instrumentService)
+        public InstrumentsController(InstrumentService instrumentService, ILogger<InstrumentsController> logger)
         {
             _instrumentService = instrumentService;
+            _logger = logger;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Instrument>> GetInstruments()
+        public async Task<ActionResult<IEnumerable<InstrumentDto>>> GetInstruments()
         {
-            return _instrumentService.GetAllInstruments();
+            var instruments = await _instrumentService.GetAllInstrumentsAsync();
+            return Ok(instruments);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Instrument> GetInstrument(int id)
+        public async Task<ActionResult<InstrumentDto>> GetInstrument(int id)
         {
-            var instrument = _instrumentService.GetInstrumentById(id);
+            var instrument = await _instrumentService.GetInstrumentByIdAsync(id);
             if (instrument == null)
             {
                 return NotFound();
             }
-            return instrument;
+            return Ok(instrument);
         }
 
         [HttpPost]
-        public ActionResult<Instrument> PostInstrument(Instrument instrument)
+        public async Task<ActionResult<InstrumentDto>> PostInstrument(
+            [FromForm] string name,
+            [FromForm] string description,
+            [FromForm] decimal price,
+            [FromForm] int categoryId,
+            [FromForm] IFormFile image)
         {
-            _instrumentService.AddInstrument(instrument);
-            return CreatedAtAction(nameof(GetInstrument), new { id = instrument.InstrumentId }, instrument);
+            try
+            {
+                var instrument = new InstrumentDto
+                {
+                    Name = name,
+                    Description = description,
+                    Price = price,
+                    CategoryId = categoryId
+                };
+
+                if (image != null && image.Length > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(memoryStream);
+                        instrument.ImageData = memoryStream.ToArray();
+                    }
+                }
+
+                var createdInstrument = await _instrumentService.AddInstrumentAsync(instrument, image);
+                return CreatedAtAction(nameof(GetInstrument), new { id = createdInstrument.InstrumentId }, createdInstrument);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating instrument.");
+                return StatusCode(500, $"An error occurred while creating the instrument: {ex.Message}");
+            }
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutInstrument(int id, Instrument instrument)
+        public async Task<IActionResult> PutInstrument(int id, [FromForm] InstrumentDto instrument, IFormFile image)
         {
             if (id != instrument.InstrumentId)
             {
                 return BadRequest();
             }
-            _instrumentService.UpdateInstrument(instrument);
-            return NoContent();
+
+            try
+            {
+                if (image != null && image.Length > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(memoryStream);
+                        instrument.ImageData = memoryStream.ToArray();
+                    }
+                }
+                await _instrumentService.UpdateInstrumentAsync(instrument, image);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating instrument {id}.");
+                return StatusCode(500, $"An error occurred while updating the instrument: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteInstrument(int id)
+        public async Task<IActionResult> DeleteInstrument(int id)
         {
-            _instrumentService.DeleteInstrument(id);
-            return NoContent();
+            try
+            {
+                await _instrumentService.DeleteInstrumentAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error deleting instrument {id}.");
+                return StatusCode(500, $"An error occurred while deleting the instrument: {ex.Message}");
+            }
         }
     }
 }

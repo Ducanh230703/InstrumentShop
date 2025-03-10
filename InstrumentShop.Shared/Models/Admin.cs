@@ -9,6 +9,7 @@ namespace InstrumentShop.Shared.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AdminId { get; set; }
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
         [Required]
         public string PasswordHash { get; set; }

@@ -13,6 +13,10 @@ namespace InstrumentShop.Shared.Models
         [Required]
         [MaxLength(100)]
         public string CategoryName { get; set; }
+        public InstrumentCategory()
+        {
+            Instruments = new List<Instrument>();
+        }
 
         public ICollection<Instrument> Instruments { get; set; }
     }

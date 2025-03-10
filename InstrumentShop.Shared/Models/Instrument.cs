@@ -19,16 +19,15 @@ namespace InstrumentShop.Shared.Models
 
         [Required]
         public decimal Price { get; set; }
-
-        [MaxLength(200)]
-        public string ImageUrl { get; set; }
+        public byte[] ImageData { get; set; }
 
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public InstrumentCategory Category { get; set; }
-
+        public Instrument()
+        {
+            OrderDetails =new List<OrderDetail>();
+        }
         public ICollection<OrderDetail> OrderDetails { get; set; }
-        public ICollection<CartItem> CartItems { get; set; }
-        public ICollection<Feedback> Feedbacks { get; set; }
     }
 }

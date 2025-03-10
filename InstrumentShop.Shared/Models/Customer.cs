@@ -26,8 +26,5 @@ public class Customer
 
     [MaxLength(20)]
     public string PhoneNumber { get; set; }
-
     public ICollection<Order> Orders { get; set; }
-    public ICollection<Feedback> Feedbacks { get; set; }
-    public ICollection<Cart> Carts { get; set; }
 }

@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instruments</title>
+    <link rel="stylesheet" href="~/css/instrument.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Instrument</h1>
+
+    <button onclick="showCreateForm()">Create Instrument</button>
+
+    <table id="instruments-list">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Image</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div id="instrument-modal" style="display: none;">
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center;">
+            <div style="background-color: white; padding: 20px; border-radius: 5px;">
+                <h2 id="modal-title"></h2>
+                <form id="instrument-form" enctype="multipart/form-data">
+                    <input type="hidden" id="instrumentId" />
+                    <div>
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" />
+                        <span id="name-error" style="color: red;"></span>
+                    </div>
+                    <div>
+                        <label for="description">Description:</label>
+                        <textarea id="description"></textarea>
+                        <span id="description-error" style="color: red;"></span>
+                    </div>
+                    <div>
+                        <label for="price">Price:</label>
+                        <input type="number" id="price" />
+                        <span id="price-error" style="color: red;"></span>
+                    </div>
+                    <div>
+                        <label for="categoryId">Category:</label>
+                        <select id="categoryId"></select>
+                        <span id="categoryId-error" style="color: red;"></span>
+                    </div>
+                    <div>
+                        <label for="image">Image:</label>
+                        <input type="file" id="image" accept="image/*" />
+                        <span id="image-error" style="color: red;"></span>
+                    </div>
+                    <img id="instrument-image" style="max-width: 200px; max-height: 200px; display: none;" />
+                    <br />
+                    <button type="submit">Save</button>
+                    <button type="button" onclick="closeModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/instrument.js"></script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 using InstrumentShop.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using InstrumentShop.Shared.Models.DTOs;
 
 namespace InstrumentShop.API.Controllers
 {
@@ -17,15 +18,15 @@ namespace InstrumentShop.API.Controllers
         }
 
         [HttpGet("order/{orderId}")]
-        public ActionResult<IEnumerable<OrderDetail>> GetOrderDetailsByOrderId(int orderId)
+        public ActionResult<IEnumerable<OrderDetailDto>> GetOrderDetailsByOrderId(int orderId)
         {
             return _orderDetailService.GetOrderDetailsByOrderId(orderId);
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<OrderDetail> GetOrderDetail(int id)
+        [HttpGet("{orderId}/{instrumentId}")]
+        public ActionResult<OrderDetailDto> GetOrderDetail(int orderId, int instrumentId)
         {
-            var orderDetail = _orderDetailService.GetOrderDetailById(id);
+            var orderDetail = _orderDetailService.GetOrderDetailById(orderId, instrumentId);
             if (orderDetail == null)
             {
                 return NotFound();
@@ -37,24 +38,25 @@ namespace InstrumentShop.API.Controllers
         public ActionResult<OrderDetail> PostOrderDetail(OrderDetail orderDetail)
         {
             _orderDetailService.AddOrderDetail(orderDetail);
-            return CreatedAtAction(nameof(GetOrderDetail), new { id = orderDetail.OrderDetailId }, orderDetail);
+            return CreatedAtAction(nameof(GetOrderDetail), new { orderId = orderDetail.OrderId, instrumentId = orderDetail.InstrumentId }, orderDetail);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult PutOrderDetail(int id, OrderDetail orderDetail)
+        [HttpPut("{orderId}/{instrumentId}")]
+        public IActionResult PutOrderDetail(int orderId, int instrumentId, OrderDetail orderDetail)
         {
-            if (id != orderDetail.OrderDetailId)
+            if (orderId != orderDetail.OrderId || instrumentId != orderDetail.InstrumentId)
             {
                 return BadRequest();
             }
+
             _orderDetailService.UpdateOrderDetail(orderDetail);
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteOrderDetail(int id)
+        [HttpDelete("{orderId}/{instrumentId}")]
+        public IActionResult DeleteOrderDetail(int orderId, int instrumentId)
         {
-            _orderDetailService.DeleteOrderDetail(id);
+            _orderDetailService.DeleteOrderDetail(orderId, instrumentId);
             return NoContent();
         }
     }

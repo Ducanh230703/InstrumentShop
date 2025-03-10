@@ -1,22 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-namespace InstrumentShop.Shared.Models
-{
+    namespace InstrumentShop.Shared.Models
+    {
     public class OrderDetail
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int OrderDetailId { get; set; }
-
+        [ForeignKey("Order")]
         public int OrderId { get; set; }
-        public Order Order { get; set; }
+        public Order Order { get; set; } // Thêm thuộc tính Order
 
-        public int OrderDetailInstrumentId { get; set; } // Đổi tên
-        public Instrument Instrument { get; set; }
+        [ForeignKey("Instrument")]
+        public int InstrumentId { get; set; }
+        public Instrument Instrument { get; set; } // Thêm thuộc tính Instrument
 
         public int Quantity { get; set; }
 
         public decimal Price { get; set; }
+        
     }
 }

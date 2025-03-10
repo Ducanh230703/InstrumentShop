@@ -1,0 +1,47 @@
+﻿
+
+<h1>Admins</h1>
+
+<p>
+    <button onclick="showCreateForm()">Create New</button>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>FullName</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="admins-list">
+    </tbody>
+</table>
+
+<div id="admin-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modal-title"></h2>
+        <form id="admin-form">
+            <input type="hidden" id="adminId">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" required>
+                <span id="email-error" class="error"></span>
+            </div>
+            <div class="form-group">
+                <label for="passwordHash">Password:</label>
+                <input type="password" class="form-control" id="passwordHash" required>
+                <span id="passwordHash-error" class="error"></span>
+            </div>
+            <div class="form-group">
+                <label for="fullName">FullName:</label>
+                <input type="text" class="form-control" id="fullName" required>
+                <span id="fullName-error" class="error"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+<script src="~/js/Admin.js"></script>   

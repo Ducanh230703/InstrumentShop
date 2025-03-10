@@ -1,11 +1,10 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard</title>
-</head>
-<body>
-    <h1>Welcome to Admin Dashboard!</h1>
-    <button id="logout-button">Logout</button>
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
     <script src="~/js/index.js"></script>
-</body>
-</html>
+}
+
+<h1>Welcome to Admin Dashboard!</h1>
+<button id="logout-button" class="btn btn-danger">Logout</button>

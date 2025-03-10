@@ -87,5 +87,20 @@ namespace InstrumentShop.API.Services
                 }
             }
         }
+        // Trong OrderService
+        public void CalculateTotalAmount(int orderId)
+        {
+            var order = _context.Orders.Find(orderId);
+            if (order == null)
+            {
+                return; // Hoặc throw exception nếu cần
+            }
+
+            order.TotalAmount = _context.OrderDetails
+                .Where(od => od.OrderId == orderId)
+                .Sum(od => od.Price);
+
+            _context.SaveChanges();
+        }
     }
 }

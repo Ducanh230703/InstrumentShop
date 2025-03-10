@@ -36,8 +36,17 @@ namespace InstrumentShop.API.Controllers
         [HttpPost]
         public ActionResult<Customer> PostCustomer(Customer customer)
         {
-            _customerService.AddCustomer(customer);
-            return CreatedAtAction(nameof(GetCustomer), new { id = customer.CustomerId }, customer);
+            // Loại bỏ validation cho Carts, Orders, Feedbacks
+            ModelState.Remove("Orders");
+            ModelState.Remove("Feedbacks");
+
+            if (ModelState.IsValid)
+            {
+                _customerService.AddCustomer(customer);
+                return CreatedAtAction(nameof(GetCustomer), new { id = customer.CustomerId }, customer);
+            }
+
+            return BadRequest(ModelState); // Trả về lỗi validation
         }
 
         [HttpPut("{id}")]
@@ -47,8 +56,14 @@ namespace InstrumentShop.API.Controllers
             {
                 return BadRequest();
             }
-            _customerService.UpdateCustomer(customer);
-            return NoContent();
+
+            if (ModelState.IsValid)
+            {
+                _customerService.UpdateCustomer(customer);
+                return NoContent();
+            }
+
+            return BadRequest(ModelState); // Trả về lỗi validation
         }
 
         [HttpDelete("{id}")]

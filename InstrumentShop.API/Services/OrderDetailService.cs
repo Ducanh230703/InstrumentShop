@@ -1,7 +1,10 @@
 ﻿using InstrumentShop.Shared.Data;
 using InstrumentShop.Shared.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using InstrumentShop.Shared.Models.DTOs;
+
 
 namespace InstrumentShop.API.Services
 {
@@ -14,14 +17,38 @@ namespace InstrumentShop.API.Services
             _context = context;
         }
 
-        public List<OrderDetail> GetOrderDetailsByOrderId(int orderId)
+        public List<OrderDetailDto> GetOrderDetailsByOrderId(int orderId)
         {
-            return _context.OrderDetails.Where(od => od.OrderId == orderId).ToList();
+            // Sử dụng LINQ to Entities để tối ưu hóa truy vấn
+            var query = from od in _context.OrderDetails
+                        where od.OrderId == orderId
+                        select new OrderDetailDto
+                        {
+                            OrderId = od.OrderId,
+                            InstrumentId = od.InstrumentId,
+                            InstrumentName = od.Instrument.Name,
+                            Quantity = od.Quantity,
+                            Price = od.Price
+                        };
+
+            return query.ToList();
         }
 
-        public OrderDetail GetOrderDetailById(int id)
+        public OrderDetailDto GetOrderDetailById(int orderId, int instrumentId)
         {
-            return _context.OrderDetails.Find(id);
+            // Sử dụng LINQ to Entities để tối ưu hóa truy vấn
+            var query = from od in _context.OrderDetails
+                        where od.OrderId == orderId && od.InstrumentId == instrumentId
+                        select new OrderDetailDto
+                        {
+                            OrderId = od.OrderId,
+                            InstrumentId = od.InstrumentId,
+                            InstrumentName = od.Instrument.Name,
+                            Quantity = od.Quantity,
+                            Price = od.Price
+                        };
+
+            return query.FirstOrDefault();
         }
 
         public void AddOrderDetail(OrderDetail orderDetail)
@@ -36,9 +63,9 @@ namespace InstrumentShop.API.Services
             _context.SaveChanges();
         }
 
-        public void DeleteOrderDetail(int id)
+        public void DeleteOrderDetail(int orderId, int instrumentId)
         {
-            var orderDetail = _context.OrderDetails.Find(id);
+            var orderDetail = _context.OrderDetails.Find(orderId, instrumentId);
             if (orderDetail != null)
             {
                 _context.OrderDetails.Remove(orderDetail);

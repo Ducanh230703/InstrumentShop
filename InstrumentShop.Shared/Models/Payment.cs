@@ -14,11 +14,11 @@ namespace InstrumentShop.Shared.Models
         public Order Order { get; set; }
 
         [MaxLength(50)]
-        public string PaymentMethod { get; set; } // Ví dụ: Credit Card, PayPal, Momo
+        public string PaymentMethod { get; set; }
 
         public decimal Amount { get; set; }
 
         [MaxLength(50)]
-        public string PaymentStatus { get; set; } // Ví dụ: Thành công, Thất bại, Đang chờ
+        public string PaymentStatus { get; set; }
     }
 }

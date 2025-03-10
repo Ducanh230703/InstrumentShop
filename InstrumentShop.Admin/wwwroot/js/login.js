@@ -4,7 +4,7 @@
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        fetch('/api/Admins/authenticate', {
+    fetch('https://localhost:7236/api/Admins/authenticate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -14,7 +14,7 @@
             .then(response => {
                 if (response.status === 200) {
                     // Đăng nhập thành công
-                    return response.json(); // Đọc response body dưới dạng JSON
+                     window.location.href = '/Home/Index';
                 } else if (response.status === 401) {
                     // Sai email hoặc password
                     document.getElementById('error-message').textContent = 'Invalid email or password.';

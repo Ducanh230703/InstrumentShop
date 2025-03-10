@@ -37,6 +37,8 @@ namespace InstrumentShop.API.Controllers
         public ActionResult<Order> PostOrder(Order order)
         {
             _orderService.AddOrder(order);
+            // Tính toán TotalAmount sau khi thêm Order
+            _orderService.CalculateTotalAmount(order.OrderId);
             return CreatedAtAction(nameof(GetOrder), new { id = order.OrderId }, order);
         }
 
@@ -48,6 +50,8 @@ namespace InstrumentShop.API.Controllers
                 return BadRequest();
             }
             _orderService.UpdateOrder(order);
+            // Tính toán TotalAmount sau khi cập nhật Order
+            _orderService.CalculateTotalAmount(order.OrderId);
             return NoContent();
         }
 
